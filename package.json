@@ -1,0 +1,13 @@
+{
+  "name": "dsa-social-network",
+  "version": "1.0.0",
+  "description": "Advanced Data Structures and Algorithms - Social Network Project",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "node test.js"
+  },
+  "keywords": ["DSA", "data-structures", "algorithms", "social-network"],
+  "author": "",
+  "license": "ISC"
+}
