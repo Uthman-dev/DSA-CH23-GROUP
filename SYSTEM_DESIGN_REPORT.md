@@ -51,7 +51,7 @@ The system is driven by 8 core use cases, each mapped to specific data structure
 | **Storage per user** | ~100 bytes | ~100GB total for 1M users (manageable on a single modern server). |
 
 ### 2.3 Complexity Analysis & Small Benchmark
-*Measured on a standard development machine (Node.js v18, 16GB RAM) simulating 10,000 operations.*
+*(Measured on a standard development machine: Node.js v18, 16GB RAM, simulating 10,000 operations)*
 
 | Operation | Theoretical Big-O | Measured Time (10k ops) | Observation |
 | :--- | :--- | :--- | :--- |
@@ -66,79 +66,35 @@ The system is driven by 8 core use cases, each mapped to specific data structure
 ## STEP 3: BASIC DESIGN
 
 ### 3.1 High-Level Architecture
-*[Insert Architecture Diagram Image Here: e.g., `architecture.png` showing App Layer → Business Logic → Data Structures/Algorithms]*
 
-The system follows a modular, layered architecture to ensure separation of concerns:
-1. **Application Layer (`app.js`):** CLI interface handling user input, validation, and menu routing.
-2. **Business Logic Layer (`system.js`):** `SocialNetwork` class orchestrating state management and use case execution.
-3. **Data Structure Layer (`data-structures.js`):** Custom implementations of Hash Table (linear probing), Stack, Queue, and Min-Heap.
-4. **Algorithm Layer (`algorithms.js`):** Custom implementations of Merge Sort and Binary Search.
-
-### 3.2 In-Memory Data Model
-- **Users:** `HashTable<userId, userName>` for O(1) lookups.
-- **Friendship Graph:** `HashTable<userId, Array<friendId>>` representing an adjacency list for bidirectional relationships.
-- **Undo History:** `Stack<Action>` storing `{type, id1, id2, timestamp}` for LIFO reversal.
-- **Recommendations:** `MinHeap` storing `{userId, mutualCount}` to efficiently extract top-K suggestions.
-
-### 3.3 Mandatory DSA Justification
-- **Hash Table:** Provides O(1) average-case user lookups via polynomial rolling hash and linear probing.
-- **Graph:** Modeled as an adjacency list, allowing O(1) bidirectional edge creation.
-- **Stack:** Provides strict O(1) LIFO operations for the undo history.
-- **Queue:** Utilized as a FIFO buffer to enable level-by-level Breadth-First Search (BFS) traversal.
-- **Merge Sort:** Guarantees O(n log n) stable sorting, a strict prerequisite for predictable binary search.
-- **Binary Search:** Reduces friend lookup time from O(n) to O(log n) on sorted arrays.
-- **Min-Heap:** Maintains a priority queue of size *K*, reducing recommendation generation from O(n log n) to O(n log k).
-
----
-
-## STEP 4: BOTTLENECKS
-
-Preliminary analysis of the baseline single-threaded, in-memory design identified six key bottlenecks that limit scalability:
-
-1. **Hash Table Collisions (HIGH):** Poor hash functions or fixed table sizes cause the load factor to spike, degrading lookups from O(1) to O(n).
-2. **Array Filtering on Undo (MEDIUM):** Removing a friendship requires iterating through the friend array, costing O(n) per undo operation for users with thousands of friends.
-3. **Single-Threaded Execution (HIGH):** Node.js operates on a single event loop. Heavy O(n log n) sorts or O(V+E) BFS traversals block the thread, preventing concurrent request handling.
-4. **Dense Graph BFS (MEDIUM):** In highly connected networks, edges (E) approach V². Mutual friend calculations become computationally expensive (~250ms for 1M users with 500 friends each).
-5. **Repeated Sort Operations (LOW):** Lack of caching forces the system to redundantly compute O(n log n) sorts for the same friend list on every request.
-6. **Brute-Force Recommendations (HIGH):** Calculating mutual friends for all 1M non-friend candidates requires running BFS 1M times, resulting in massive latency.
-
----
-
-## STEP 5: SCALABILITY
-
-To address the identified bottlenecks, a phased scalability plan is proposed to evolve the system from a local prototype to a global distributed platform.
-
-### Phase 1: Single-Server Optimizations (Immediate)
-- **Dynamic Hash Resizing:** Automatically double the hash table size when the load factor exceeds 0.75, maintaining amortized O(1) inserts.
-- **Sort Caching (Memoization):** Cache the sorted friend array in memory. Invalidate the cache only when a friendship is added or removed, reducing repeated sort requests to O(1).
-- **Bidirectional BFS:** For mutual friends, run simultaneous BFS from both User A and User B, stopping when the frontiers meet. This reduces average complexity from O(V+E) to O(√V).
-
-### Phase 2: Master-Slave Replication (1M – 10M Users)
-- **Read-Write Splitting:** Route write operations (add user, add friend) to a primary master node. Route read-heavy operations (sort, search, recommendations) to read replicas.
-- **Async Log Shipping:** Maintain eventual consistency across replicas to prevent blocking the primary node.
-
-### Phase 3: Distributed Sharding (10M – 100M Users)
-- **User Sharding:** Distribute users across multiple database shards using consistent hashing: `shard_id = hash(user_id) % num_shards`.
-- **Distributed Graph Queries:** Implement a message queue (e.g., Kafka) to handle cross-shard friendship updates asynchronously.
-
-### Phase 4: Fully Distributed Microservices (100M+ Users)
-- Transition to geo-sharded NoSQL databases (e.g., Cassandra), Redis for caching sorted lists, and Elasticsearch for advanced friend discovery.
-
-### 5.1 Cost-Benefit Analysis & Trade-offs
-| Optimization | Benefit | Cost | Feasibility |
-| :--- | :--- | :--- | :--- |
-| **Dynamic Resizing** | Prevents O(n) lookup degradation | O(n) resize operation (amortized) | High |
-| **Sort Caching** | 10x faster repeated requests | Minor memory overhead per user | High |
-| **Bidirectional BFS** | ~50% faster mutual friend calc | Increased code complexity | Medium |
-| **Sharding** | 10x user capacity scaling | Network latency, eventual consistency | Medium |
-
-**Key Trade-offs Accepted:** We trade a small amount of RAM for massive CPU savings via caching (Memory vs. Speed). Distributed phases accept *eventual consistency* for friendship updates to maintain high system availability (CAP Theorem).
-
----
-
-## Conclusion
-This project successfully demonstrates how selecting the right data structures directly impacts system performance at scale. By leveraging Hash Tables for O(1) lookups, Graphs for relationship modeling, and Heaps for priority-based recommendations, the system meets its core functional requirements while maintaining strict Big-O performance guarantees. The phased optimization strategy provides a clear, realistic roadmap for scaling the application from 1 million to over 100 million users.
-
-### Appendix: Testing & Execution
-- **Test Coverage:** 30 comprehensive tests covering basic operations, edge cases (self-friendships, duplicates), and system-wide consistency (exceeding the 15-test minimum requirement).
-- **Execution:** Run `node app.js` for the interactive CLI or `npm test` to validate all test cases. No external dependencies are required.
+**GitHub/Markdown Rendering (Mermaid):**  
+*(Note: GitHub automatically renders the code block below as a professional architecture diagram image)*
+```mermaid
+graph TD
+    User((End User)) --> CLI[Application Layer: app.js<br/>CLI Interface & Input Validation]
+    CLI --> Core[Business Logic Layer: system.js<br/>SocialNetwork Class & State Management]
+    
+    Core --> DS[Data Structures Layer: data-structures.js]
+    Core --> ALG[Algorithm Layer: algorithms.js]
+    
+    DS --> HT[(Hash Table<br/>O(1) User Lookup)]
+    DS --> GR[(Graph / Adj. List<br/>O(1) Friendships)]
+    DS --> ST[(Stack<br/>O(1) Undo History)]
+    DS --> Q[(Queue<br/>BFS Traversal)]
+    DS --> MH[(Min-Heap<br/>O(n log k) Recommendations)]
+    
+    ALG --> MS[Merge Sort<br/>O(n log n) Stable Sort]
+    ALG --> BS[Binary Search<br/>O(log n) Lookup]
+    
+    Core -.-> HT
+    Core -.-> GR
+    Core -.-> ST
+    Core -.-> Q
+    Core -.-> MH
+    Core -.-> MS
+    Core -.-> BS
+    
+    style User fill:#f9f,stroke:#333,stroke-width:2px
+    style Core fill:#bbf,stroke:#333,stroke-width:2px
+    style DS fill:#dfd,stroke:#333,stroke-width:2px
+    style ALG fill:#ffd,stroke:#333,stroke-width:2px
