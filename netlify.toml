@@ -1,4 +1,3 @@
 [build]
   base = "frontend"
   publish = "."
-  command = "echo 'No build step needed'"
