@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SocialGraph // Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <div class="app">
+    <header>
+      <div class="brand">
+        <div class="brand-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+        </div>
+        <h1>SocialGraph</h1>
+        <span class="badge">Visualizer</span>
+      </div>
+      <div class="stats-mini">
+        <span>USERS <strong id="header-users">0</strong></span>
+        <span>CONNECTIONS <strong id="header-edges">0</strong></span>
+      </div>
+    </header>
+
+    <aside class="sidebar">
+      <div class="card">
+        <div class="card-title">Controls</div>
+
+        <div class="section-header">Add New User</div>
+        <input type="text" id="input-id" placeholder="e.g., @alice" />
+        <div id="id-status" class="id-status"></div>
+
+        <input type="text" id="input-name" placeholder="e.g., Alice Smith" />
+        <button class="btn btn-primary" id="btn-add-user">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+          Create User
+        </button>
+
+        <div class="section-header">Manage Connections</div>
+        <select id="select-u1"><option value="">Select first user...</option></select>
+        <select id="select-u2"><option value="">Select second user...</option></select>
+        <button class="btn" id="btn-add-friend">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="8.5" cy="7" r="4"></circle><line x1="20" y1="8" x2="20" y2="14"></line><line x1="23" y1="11" x2="17" y2="11"></line></svg>
+          Connect Users
+        </button>
+
+        <button class="btn" id="btn-undo" style="margin-top:8px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"></polyline><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path></svg>
+          Undo Last Connection
+        </button>
+        
+        <button class="btn" id="btn-recommend">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path></svg>
+          Recommend Friends
+        </button>
+
+        <div class="section-header">Search Network</div>
+        <input type="text" id="input-search" placeholder="Enter @username to find..." />
+        <button class="btn" id="btn-search">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          Search Friends List
+        </button>
+
+        <div id="status" class="status-msg">Ready. Start by adding a user.</div>
+      </div>
+    </aside>
+
+    <section class="main-view">
+      <div class="card">
+        <div class="tabs">
+          <button class="tab active" data-tab="graph">Graph View</button>
+          <button class="tab" data-tab="stats">Metrics</button>
+          <button class="tab" data-tab="log">Activity Log</button>
+        </div>
+
+        <div id="panel-graph" class="tab-panel active">
+          <div class="canvas-wrapper">
+            <canvas id="graph-canvas"></canvas>
+            <div class="hud-overlay hud-tr">USERS: <span id="hud-nodes">0</span> | CONNECTIONS: <span id="hud-edges">0</span></div>
+            <div class="hud-overlay hud-bl">HOVER TO INSPECT</div>
+            <div class="hud-overlay hud-br">PHYSICS ENGINE: ACTIVE</div>
+          </div>
+        </div>
+
+        <div id="panel-stats" class="tab-panel">
+          <div class="card-title">Network Metrics</div>
+          <div class="stat-grid">
+            <div class="stat-item"><div class="stat-val" id="stat-users">0</div><div class="stat-label">Total Users</div></div>
+            <div class="stat-item"><div class="stat-val" id="stat-edges">0</div><div class="stat-label">Total Connections</div></div>
+            <div class="stat-item"><div class="stat-val" id="stat-density">0.0</div><div class="stat-label">Network Density</div></div>
+            <div class="stat-item"><div class="stat-val" id="stat-degree">0.0</div><div class="stat-label">Avg Connections</div></div>
+          </div>
+        </div>
+
+        <div id="panel-log" class="tab-panel">
+          <div class="card-title">Activity Log</div>
+          <div id="log-output"></div>
+        </div>
+      </div>
+    </section>
+
+    <aside class="right-panel">
+      <div class="card">
+        <div class="tabs">
+          <button class="tab active" data-tab="hash">Hash Table</button>
+          <button class="tab" data-tab="stack">History</button>
+          <button class="tab" data-tab="heap">Recommendations</button>
+        </div>
+
+        <div id="panel-hash" class="tab-panel active">
+          <div class="card-title">Internal Array (Linear Probing)</div>
+          <div id="view-hash-viz" class="hash-viz"></div>
+          
+          <div class="card-title" style="margin-top:24px;">Active Entries</div>
+          <div id="view-hash" class="data-list"><span class="empty">No users added yet</span></div>
+        </div>
+
+        <div id="panel-stack" class="tab-panel">
+          <div class="card-title">History (LIFO)</div>
+          <div id="view-stack" class="data-list"><span class="empty">No actions taken yet</span></div>
+        </div>
+
+        <div id="panel-heap" class="tab-panel">
+          <div class="card-title">Recommendation Heap</div>
+          <div id="view-heap" class="data-list"><span class="empty">Click "Recommend Friends" to see results</span></div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

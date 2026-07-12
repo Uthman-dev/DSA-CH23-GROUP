@@ -1,4 +1,5 @@
-// MERGE SORT O(n log n)
+
+// Merge Sort (O(n log n)) – stable
 function mergeSort(arr) {
     if (arr.length <= 1) return arr;
     const mid = Math.floor(arr.length / 2);
@@ -8,26 +9,29 @@ function mergeSort(arr) {
 }
 
 function merge(left, right) {
-    let result = [];
+    const result = [];
     let i = 0, j = 0;
     while (i < left.length && j < right.length) {
-        if (left[i].localeCompare(right[j]) < 0) result.push(left[i++]);
-        else result.push(right[j++]);
+        if (left[i].localeCompare(right[j]) <= 0) {
+            result.push(left[i++]);
+        } else {
+            result.push(right[j++]);
+        }
     }
     return result.concat(left.slice(i)).concat(right.slice(j));
 }
 
-// BINARY SEARCH O(log n)
+// Binary Search (O(log n)) – assumes sorted array
 function binarySearch(sortedArr, target) {
     let left = 0;
     let right = sortedArr.length - 1;
     while (left <= right) {
-        let mid = Math.floor((left + right) / 2);
+        const mid = Math.floor((left + right) / 2);
         if (sortedArr[mid] === target) return mid;
         if (sortedArr[mid] < target) left = mid + 1;
         else right = mid - 1;
     }
-    return -1; // Not found
+    return -1;
 }
 
 module.exports = { mergeSort, binarySearch };

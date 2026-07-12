@@ -2,10 +2,13 @@
   "name": "dsa-social-network",
   "version": "1.0.0",
   "description": "Advanced Data Structures and Algorithms - Social Network Project",
-  "main": "app.js",
+  "main": "Backend/app.js",
   "scripts": {
-    "start": "node app.js",
-    "test": "node test.js"
+    "start": "node Backend/sever.js",
+    "test": "node Backend/test.js"
+  },
+  "dependencies": {
+    "express": "^4.21.2"
   },
   "keywords": ["DSA", "data-structures", "algorithms", "social-network"],
   "author": "",
