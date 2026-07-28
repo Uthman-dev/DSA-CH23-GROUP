@@ -226,7 +226,7 @@ Simply open `index.html` in any modern browser. No server is required – all da
 
 Watch our full 5–8 minute walkthrough covering the running system, DSA implementation, scalability bottlenecks, and Q&A.
 
-[Click here to watch the demo on YouTube](https://youtu.be/[])
+[Click here to watch the demo on YouTube](https://youtu.be/znM77tDQmj4)
 
 ---
 
