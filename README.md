@@ -208,16 +208,16 @@ Simply open `index.html` in any modern browser. No server is required – all da
 - **Team Lead / Integrator + System Design Lead – BIT/2024/74642 UTHMAN MWONGERA**  
   Coordinates project activities, manages GitHub repository, oversees integration of all system components, owns the Chapter 23 5-step methodology, and leads the System Design Report.
 
-- **Data Structures Lead + Algorithms Lead – BIT/2024/74642 UTHMAN MWONGERA**  
+- **Data Structures Lead + Algorithms Lead – BIT/2024/56261 JAMES MAM**  
   Implements HashTable, Stack, Queue, MinHeap, mergeSort, binarySearch, and BFS logic. Conducts complexity analysis and scalability benchmarking.
 
-- **Backend / API Developer + CLI Developer – BIT/2024/74642 UTHMAN MWONGERA**  
+- **Backend / API Developer + CLI Developer – BIT/2024/74851 SEAN KITETU**  
   Develops system.js (business logic), server.js (REST API), and app.js (interactive CLI). Connects backend logic to the frontend.
 
-- **UI / Frontend Developer – BIT/2024/74642 UTHMAN MWONGERA**  
+- **UI / Frontend Developer – BIT/2024/73485 IAN KIRUI**  
   Designs and builds the web visualizer (`index.html`) with graph rendering and physics engine. Ensures a user-friendly experience.
 
-- **Testing & QA Lead + Performance/Benchmark + Documentation + Demo Presenter – BIT/2024/74642 UTHMAN MWONGERA**  
+- **Testing & QA Lead + Performance/Benchmark + Documentation + Demo Presenter – BIT/2022/51502 VICTOR KIVINDA**  
   Writes test cases (test.js), runs benchmarks, maintains project documentation (README, System Design Report), records and edits the project demonstration video.
 
 ---
