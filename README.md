@@ -221,6 +221,13 @@ Simply open `index.html` in any modern browser. No server is required – all da
   Writes test cases (test.js), runs benchmarks, maintains project documentation (README, System Design Report), records and edits the project demonstration video.
 
 ---
+## Hosted site
+
+This site was hosted on netlify for the frontend visualization
+
+[Click here to see the hosted site ](https://dsa-ch23-group.netlify.app/)
+
+---
 
 ## Demo Video
 
